@@ -1,4 +1,5 @@
-import 'comment.dart';
+import 'package:mobile_client/model/comment.dart';
+
 import 'user.dart';
 
 class ForumDetail {
@@ -9,7 +10,7 @@ class ForumDetail {
   String createdAt;
   String updatedAt;
   User user;
-  List<Comment> comments;
+  Comments comments;
 
   ForumDetail({
     this.id,
@@ -30,12 +31,9 @@ class ForumDetail {
     createdAt = json['created_at'];
     updatedAt = json['updated_at'];
     user = json['user'] != null ? new User.fromJson(json['user']) : null;
-    if (json['comments'] != null) {
-      comments = <Comment>[];
-      json['comments'].forEach((v) {
-        comments.add(new Comment.fromJson(v));
-      });
-    }
+    comments = json['comments'] != null
+        ? new Comments.fromJson(json['comments'])
+        : null;
   }
 
   Map<String, dynamic> toJson() {
@@ -50,7 +48,7 @@ class ForumDetail {
       data['user'] = this.user.toJson();
     }
     if (this.comments != null) {
-      data['comments'] = this.comments.map((v) => v.toJson()).toList();
+      data['comments'] = this.comments.toJson();
     }
     return data;
   }

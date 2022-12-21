@@ -27,7 +27,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     final user = context.read<Auth>().user;
     return Scaffold(
       appBar: AppBar(
-        title: Text('Profile Screen ${user.username}'),
+        title: Text('Profile Screen ${user.username ?? ''}'),
         actions: [
           Padding(
             padding: EdgeInsets.only(right: 10),

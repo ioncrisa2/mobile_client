@@ -26,7 +26,9 @@ class ForumService {
     if (response.statusCode == 200) {
       final jsonResponse = json.decode(response.toString())['data'];
 
-      return ForumDetail.toJson(jsonResponse);
+      // print(jsonResponse);
+      final result = ForumDetail.toJson(jsonResponse);
+      return result;
     }
   }
 }
