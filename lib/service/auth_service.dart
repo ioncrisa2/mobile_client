@@ -93,7 +93,7 @@ class Auth extends ChangeNotifier {
     }
   }
 
-  Future requestCheckLogin() async {
+  Future<bool> requestCheckLogin() async {
     try {
       final token = await TokenStorage().readToken();
       final res = await dio().get('/user',
@@ -102,15 +102,17 @@ class Auth extends ChangeNotifier {
           ));
 
       if (res.statusCode == 200) {
-        _user = User.fromJson(json.decode(res.toString())['data']);
-        _detail =
-            Detail.fromJson(json.decode(res.toString())['data']['detail']);
+        final dynamic response = json.decode(res.toString())['data'];
+        _user = User.fromJson(response);
+        _detail = Detail.fromJson(json.decode(response['detail']));
         _isAuthenticated = true;
         notifyListeners();
       }
+      return true;
     } on Dio.DioError catch (e) {
       _isAuthenticated = false;
       notifyListeners();
+      return false;
     }
   }
 }

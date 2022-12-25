@@ -4,7 +4,7 @@ import 'package:mobile_client/component/input_form_field.dart';
 import 'package:mobile_client/component/wide_button.dart';
 import 'package:mobile_client/screens/app_drawer.dart';
 import 'package:mobile_client/service/auth_service.dart';
-// import 'package:provider/provider.dart';
+import 'package:intl/intl.dart';
 
 class RegisterScreen extends StatefulWidget {
   RegisterScreen({Key key}) : super(key: key);
@@ -14,12 +14,19 @@ class RegisterScreen extends StatefulWidget {
 }
 
 class _RegisterScreenState extends State<RegisterScreen> {
-  final _namaLengkapController = TextEditingController();
-  final _usernameController = TextEditingController();
-  final _nimController = TextEditingController();
-  final _emailController = TextEditingController();
-  final _passwordController = TextEditingController();
-  final _confirmPasswordController = TextEditingController();
+  TextEditingController _usernameController = TextEditingController();
+  TextEditingController _namaLengkapController = TextEditingController();
+  TextEditingController _nimController = TextEditingController();
+  TextEditingController _tanggalLahirController = TextEditingController();
+  TextEditingController _tempatLahirController = TextEditingController();
+  TextEditingController _jenisKelaminController = TextEditingController();
+  TextEditingController _alamatController = TextEditingController();
+  TextEditingController _emailController = TextEditingController();
+  TextEditingController _passwordController = TextEditingController();
+  TextEditingController _confirmPasswordController = TextEditingController();
+
+  List _jenisKelamin = ['Laki-laki', 'Perempuan'];
+  String _jenisKelaminVal = 'Laki-laki';
 
   //error handle from api call
   bool _hasError = false;
@@ -27,35 +34,58 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   @override
   void dispose() {
-    _namaLengkapController.dispose();
-    _emailController.dispose();
-    _passwordController.dispose();
-    _confirmPasswordController.dispose();
-    _usernameController.dispose();
-    _nimController.dispose();
+    _emailController.dispose(); /** done */
+    _passwordController.dispose(); /** done */
+    _confirmPasswordController.dispose(); /** done */
+    _usernameController.dispose(); /** done */
+    _namaLengkapController.dispose(); /** done */
+    _nimController.dispose(); /** done */
+    _tanggalLahirController.dispose(); /** done */
+    _tempatLahirController.dispose(); /** done */
+    _jenisKelaminController.dispose(); /** done */
+    _alamatController.dispose(); /** done */
     super.dispose();
   }
 
-  Future submitRegisterForm() async {
-    final res = await Auth().requestRegister({
-      "nama_lengkap": _namaLengkapController.text,
-      "username": _usernameController.text,
-      "nim": _nimController.text,
-      "email": _emailController.text,
-      "password": _passwordController.text,
-      "confirm_password": _confirmPasswordController.text,
-    });
-    if (res['status'] == true) {
-      //redirect to login screen
-      Navigator.pushNamed(context, '/login', arguments: {
-        'flash_msg': 'Berhasil Daftar, silahkan login untuk melanjutkan',
-      });
-    } else {
-      setState(() {
-        _hasError = true;
-        _errorMessage = res['error_message'];
-      });
-    }
+  @override
+  void initState() {
+    super.initState();
+    _tanggalLahirController.text = "";
+  }
+
+  submitRegisterForm() {
+    List _debugInputed = [
+      "username : " + _usernameController.text,
+      " email : " + _emailController.text,
+      "password : " + _passwordController.text,
+      "confirm password : " + _confirmPasswordController.text,
+      "nama lengkap : " + _namaLengkapController.text,
+      "nim : " + _nimController.text,
+      "jenis kelamin : " + _jenisKelaminController.text,
+      "tanggal lahir : " + _tanggalLahirController.text,
+      "tempat lahir : " + _tempatLahirController.text,
+      "alamat : " + _alamatController.text
+    ];
+
+    print(_debugInputed);
+    // final res = await Auth().requestRegister({
+    //   "username": _usernameController.text,
+    //   "email": _emailController.text,
+    //   "password": _passwordController.text,
+    //   "confirm_password": _confirmPasswordController.text,
+    //   "role_id": 2
+    // });
+    // if (res['status'] == true) {
+    //   //redirect to login screen
+    //   Navigator.pushNamed(context, '/login', arguments: {
+    //     'flash_msg': 'Berhasil Daftar, silahkan login untuk melanjutkan',
+    //   });
+    // } else {
+    //   setState(() {
+    //     _hasError = true;
+    //     _errorMessage = res['error_message'];
+    //   });
+    // }
   }
 
   @override
@@ -69,49 +99,111 @@ class _RegisterScreenState extends State<RegisterScreen> {
           padding: const EdgeInsets.all(20.0),
           child: Column(
             children: <Widget>[
-              InputFormField(
+              SizedBox(height: 10),
+              TextField(
                 controller: _namaLengkapController,
-                label: 'Nama Lengkap',
-                hint: 'Masukkan nama lengkap',
-                icon: Icon(Icons.person),
+                decoration: InputDecoration(
+                    icon: Icon(Icons.person), labelText: "Nama Lengkap"),
               ),
               SizedBox(height: 10),
-              InputFormField(
-                  controller: _usernameController,
-                  label: 'Username',
-                  hint: 'Masukkan username',
-                  icon: Icon(Icons.account_box)),
-              SizedBox(height: 10),
-              InputFormField(
+              TextField(
+                maxLength: 7,
                 controller: _nimController,
-                label: 'NIM',
-                hint: 'Masukkan NIM',
-                icon: Icon(Icons.confirmation_number),
+                decoration: InputDecoration(
+                    icon: Icon(Icons.list_alt), labelText: "Nim Anda"),
               ),
               SizedBox(height: 10),
-              InputFormField(
-                controller: _emailController,
-                label: 'Email',
-                hint: 'Masukkan email',
-                icon: Icon(Icons.email),
-              ),
-              SizedBox(height: 10),
-              InputFormField(
-                controller: _passwordController,
-                label: 'Password',
-                hint: 'Masukkan password',
-                obscureText: true,
-                icon: Icon(Icons.lock),
-              ),
-              SizedBox(height: 10),
-              InputFormField(
-                controller: _confirmPasswordController,
-                label: 'Konfirmasi Password',
-                hint: 'Masukkan konfirmasi password',
-                obscureText: true,
-                icon: Icon(Icons.lock),
-              ),
+              TextField(
+                controller: _tanggalLahirController,
+                decoration: InputDecoration(
+                  icon: Icon(Icons.calendar_today),
+                  labelText: "Masukkan Tanggal Lahir",
+                ),
+                onTap: () async {
+                  DateTime pickedDate = await showDatePicker(
+                      context: context,
+                      initialDate: DateTime.now(),
+                      firstDate: DateTime(1950),
+                      lastDate: DateTime(2100));
 
+                  if (pickedDate != null) {
+                    String formattedDate =
+                        new DateFormat('yyyy-MM-dd').format(pickedDate);
+                    setState(() {
+                      _tanggalLahirController.text = formattedDate;
+                    });
+                  } else {}
+                },
+              ),
+              SizedBox(height: 10),
+              TextField(
+                controller: _tempatLahirController,
+                decoration: InputDecoration(
+                    icon: Icon(Icons.list_alt), labelText: "Tempat Lahir Anda"),
+              ),
+              SizedBox(height: 10),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  Text("Jenis Kelamin"),
+                  SizedBox(
+                    width: 200,
+                    child: DropdownButton(
+                      hint: Text("Pilih Jenis Kelamin Anda"),
+                      value: _jenisKelaminVal,
+                      items: _jenisKelamin.map((value) {
+                        return DropdownMenuItem(
+                          child: Text(value),
+                          value: value,
+                        );
+                      }).toList(),
+                      onChanged: (value) {
+                        setState(() {
+                          _jenisKelaminVal = value;
+                          _jenisKelaminController.text = value;
+                        });
+                      },
+                    ),
+                  ),
+                ],
+              ),
+              SizedBox(height: 10),
+              TextField(
+                controller: _alamatController,
+                maxLines: null,
+                decoration: InputDecoration(
+                    icon: Icon(Icons.location_city), labelText: "Alamat Anda"),
+              ),
+              SizedBox(height: 10),
+              TextField(
+                maxLength: 16,
+                controller: _usernameController,
+                decoration: InputDecoration(
+                    icon: Icon(Icons.people_alt), labelText: "Username Anda"),
+              ),
+              SizedBox(height: 10),
+              TextField(
+                controller: _emailController,
+                decoration: InputDecoration(
+                    icon: Icon(Icons.email), labelText: "Email Anda"),
+              ),
+              SizedBox(height: 10),
+              TextField(
+                maxLength: 16,
+                controller: _passwordController,
+                obscureText: true,
+                decoration: InputDecoration(
+                    icon: Icon(Icons.lock), labelText: "Password Anda"),
+              ),
+              SizedBox(height: 10),
+              TextField(
+                maxLength: 16,
+                controller: _confirmPasswordController,
+                obscureText: true,
+                decoration: InputDecoration(
+                    icon: Icon(Icons.lock), labelText: "Confirm Password Anda"),
+              ),
+              SizedBox(height: 10),
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Visibility(
@@ -141,9 +233,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       text: 'Login',
                       style: TextStyle(color: Colors.blue),
                       recognizer: TapGestureRecognizer()
-                        ..onTap = () {
-                          Navigator.pushNamed(context, '/login');
-                        },
+                        ..onTap = () => Navigator.pushNamed(context, '/login'),
                     ),
                   ],
                 ),

@@ -36,9 +36,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
     if (res['status'] == true) {
       print('login success');
-      Navigator.pushNamed(context, '/profile', arguments: {
-        'flash_msg': 'Berhasil Login',
-      });
+      Navigator.pushNamed(context, '/home');
     } else {
       setState(() {
         _hasError = true;
@@ -62,19 +60,17 @@ class _LoginScreenState extends State<LoginScreen> {
               padding: const EdgeInsets.all(20.0),
               child: Column(
                 children: <Widget>[
-                  InputFormField(
+                  TextField(
                     controller: _emailController,
-                    label: "Email",
-                    hint: "Email",
-                    icon: Icon(Icons.email),
+                    decoration: InputDecoration(
+                        icon: Icon(Icons.email), labelText: "Email Anda"),
                   ),
                   SizedBox(height: 20),
-                  InputFormField(
+                  TextField(
                     controller: _passwordController,
-                    label: "Password",
-                    hint: "Password",
                     obscureText: true,
-                    icon: Icon(Icons.lock),
+                    decoration: InputDecoration(
+                        icon: Icon(Icons.lock), labelText: "Password"),
                   ),
                   //visibility of error message
                   Padding(
@@ -107,9 +103,8 @@ class _LoginScreenState extends State<LoginScreen> {
                           text: 'Daftar',
                           style: TextStyle(color: Colors.blue),
                           recognizer: TapGestureRecognizer()
-                            ..onTap = () {
-                              Navigator.pushNamed(context, '/register');
-                            },
+                            ..onTap =
+                                () => Navigator.pushNamed(context, '/register'),
                         ),
                       ],
                     ),

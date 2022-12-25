@@ -11,6 +11,7 @@ class AppDrawerMenu extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListTile(
       leading: icon,
+      minLeadingWidth: 0,
       title: Text(title),
       onTap: () {
         Navigator.pushNamed(context, route);

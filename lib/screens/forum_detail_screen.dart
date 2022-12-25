@@ -32,10 +32,10 @@ class _ForumDetailScreenState extends State<ForumDetailScreen> {
           builder: (ctx, ss) {
             if (ss.hasData) {
               return Column(
-                mainAxisSize: MainAxisSize.max,
                 children: <Widget>[
-                  titleSection(
+                  questionWidget(
                     ss.data.title,
+                    ss.data.body,
                     ss.data.user.username,
                     ss.data.category,
                     ss.data.createdAt,
@@ -53,22 +53,50 @@ class _ForumDetailScreenState extends State<ForumDetailScreen> {
     );
   }
 
-  Widget titleSection(
-      String title, String username, String category, String createdAt) {
+  Widget questionWidget(
+    String title,
+    String body,
+    String username,
+    String category,
+    String createdAt,
+  ) {
     return Padding(
-      padding: const EdgeInsets.all(8.0),
+      padding: const EdgeInsets.all(5.0),
       child: new Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          new Text(title,
-              textScaleFactor: 1.5,
-              style: TextStyle(fontWeight: FontWeight.bold)),
+          new Text(
+            title,
+            textScaleFactor: 1.5,
+            style: TextStyle(fontWeight: FontWeight.bold),
+          ),
+          SizedBox(height: 5),
+          Container(
+            child: Row(
+              children: [
+                new Icon(Icons.people),
+                SizedBox(width: 5),
+                new Text(
+                  'By $username',
+                  textAlign: TextAlign.left,
+                  style: TextStyle(fontSize: 15.0),
+                ),
+              ],
+            ),
+          ),
+          SizedBox(height: 5),
+          new Text(
+            body,
+            textScaleFactor: 1.2,
+            textAlign: TextAlign.justify,
+          ),
           new Padding(
             padding: EdgeInsets.all(12),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
                 new IconWithText(Icons.book, category),
-                new IconWithText(Icons.person, username),
                 new IconWithText(Icons.timer, createdAt),
               ],
             ),
@@ -97,6 +125,19 @@ class _UserCommentsState extends State<UserComments> {
     _commentsList = widget.commentList;
   }
 
+  void selectedPopupMenu(String value, String name) {
+    String message;
+    if (value == 'edit') {
+      message = "You have selected edit for $name";
+    } else if (value == 'delete') {
+      message = "You have selected delete for $name";
+    } else {
+      message = "not implemented!!";
+    }
+
+    print(message);
+  }
+
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
@@ -104,9 +145,27 @@ class _UserCommentsState extends State<UserComments> {
       itemBuilder: (ctx, index) {
         var data = _commentsList.items[index];
         return ListTile(
-          title: Text('${data.body}'),
+          title: Text('${data.body}', textAlign: TextAlign.justify),
           subtitle: Text('${data.createdAt} - oleh ${data.user.username}'),
-          trailing: Icon(Icons.more_vert),
+          trailing: PopupMenuButton(
+            icon: Icon(Icons.info),
+            onSelected: (String value) {
+              print("You click popup menu!!");
+              selectedPopupMenu(value, data.body);
+            },
+            itemBuilder: (context) {
+              return [
+                PopupMenuItem(
+                  value: 'edit',
+                  child: Text('Edit'),
+                ),
+                PopupMenuItem(
+                  value: 'delete',
+                  child: Text('Delete'),
+                ),
+              ];
+            },
+          ),
         );
       },
     );

@@ -10,6 +10,7 @@ class IconWithText extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       child: Row(
+        mainAxisSize: MainAxisSize.min,
         children: <Widget>[
           new Icon(
             this.iconData,

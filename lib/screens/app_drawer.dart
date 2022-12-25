@@ -3,6 +3,8 @@ import 'package:mobile_client/component/app_drawer_menu.dart';
 import 'package:mobile_client/service/auth_service.dart';
 import 'package:provider/provider.dart';
 
+import 'login_screen.dart';
+
 class AppDrawer extends StatefulWidget {
   AppDrawer({Key key}) : super(key: key);
 
@@ -17,7 +19,7 @@ class _AppDrawerState extends State<AppDrawer> {
       final res =
           await Provider.of<Auth>(context, listen: false).requestLogout();
       if (res['status'] == true) {
-        Navigator.pushNamed(context, '/login');
+        Navigator.of(context).pushReplacementNamed('/login');
       } else {
         print('logout failed');
       }
@@ -28,14 +30,7 @@ class _AppDrawerState extends State<AppDrawer> {
     var _menuList = [];
 
     if (isLoggedIn == true) {
-      final user = context.read<Auth>().user;
       _menuList = <Widget>[
-        ListTile(
-          title: Text('${user.username ?? 'username'}',
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
-          subtitle: Text('${user.email ?? 'email'}'),
-        ),
-        Divider(),
         AppDrawerMenu(
           route: '/home',
           title: 'Home',
@@ -46,12 +41,18 @@ class _AppDrawerState extends State<AppDrawer> {
           title: 'Profile',
           icon: Icon(Icons.account_box),
         ),
+        AppDrawerMenu(
+          route: '/forum_form',
+          title: 'New Discussion',
+          icon: Icon(Icons.format_list_bulleted_outlined),
+        ),
         Expanded(
           child: Align(
             alignment: Alignment.bottomCenter,
             child: ListTile(
               tileColor: Colors.red,
               leading: Icon(Icons.logout, color: Colors.white),
+              minLeadingWidth: 0,
               title: Text(
                 'Logout',
                 style: TextStyle(color: Colors.white),

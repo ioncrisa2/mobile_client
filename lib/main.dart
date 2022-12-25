@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mobile_client/screens/forum_form_screen.dart';
 import 'package:mobile_client/screens/home_screen.dart';
 import 'package:mobile_client/screens/login_screen.dart';
 import 'package:mobile_client/screens/profile_edit_screen.dart';
@@ -17,6 +18,7 @@ void main() {
         //named route
         routes: {
           '/home': (context) => HomeScreen(),
+          '/forum_form': (context) => ForumFormScreen(),
           '/register': (context) => RegisterScreen(),
           '/login': (context) => LoginScreen(),
           '/profile': (context) => ProfileScreen(),

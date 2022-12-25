@@ -31,4 +31,34 @@ class ForumService {
       return result;
     }
   }
+
+  Future postForum(data) async {
+    try {
+      final token = await TokenStorage().readToken();
+      final res = await dio().post(
+        '/forums',
+        data: data,
+        options: Dio.Options(
+          headers: {'Authorization': 'Bearer $token'},
+        ),
+      );
+
+      if (res.statusCode == 201) {
+        return {'status': true};
+      }
+    } on Dio.DioError catch (e) {
+      if (e.response.statusCode == 422) {
+        var _responseError = "";
+        final _responseValidation = jsonDecode(e.response.toString())['errors'];
+        for (var key in _responseValidation.keys) {
+          _responseError += _responseValidation[key][0] + "\n";
+        }
+        return {'status': false, 'error_message': _responseError};
+      }
+    }
+    return {
+      'status': false,
+      'error_message': 'something wrong, please try again'
+    };
+  }
 }

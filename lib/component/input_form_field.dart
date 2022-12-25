@@ -6,6 +6,8 @@ class InputFormField extends StatelessWidget {
   final String hint;
   final bool obscureText;
   final Icon icon;
+  final int lines;
+  final Future<dynamic> ontap;
 
   const InputFormField({
     Key key,
@@ -14,6 +16,8 @@ class InputFormField extends StatelessWidget {
     this.hint,
     this.obscureText = false,
     this.icon,
+    this.lines = 1,
+    this.ontap,
   }) : super(key: key);
 
   @override
@@ -21,6 +25,8 @@ class InputFormField extends StatelessWidget {
     return TextFormField(
       controller: controller,
       obscureText: obscureText,
+      maxLines: lines,
+      onTap: () => ontap,
       decoration: InputDecoration(
         prefixIcon: icon,
         hintText: hint,

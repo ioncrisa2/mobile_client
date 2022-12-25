@@ -16,18 +16,21 @@ class _ProfileScreenState extends State<ProfileScreen> {
     await Provider.of<Auth>(context, listen: false).requestCheckLogin();
   }
 
+  _getUserData() => context.read<Auth>().user;
+
   @override
   void initState() {
     super.initState();
     checkIsLoggedIn();
+    _getUserData();
   }
 
   @override
   Widget build(BuildContext context) {
-    final user = context.read<Auth>().user;
+    final user = _getUserData();
     return Scaffold(
       appBar: AppBar(
-        title: Text('Profile Screen ${user.username ?? ''}'),
+        title: Text('Profile Screen ${user.username ?? 'n/a'}'),
         actions: [
           Padding(
             padding: EdgeInsets.only(right: 10),
@@ -140,14 +143,24 @@ class _ProfileScreenState extends State<ProfileScreen> {
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text(
-              user,
-              style: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-                color: Colors.white,
+            if (user != null && user.length > 0)
+              Text(
+                user,
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                ),
               ),
-            ),
+            if (user == null && user.length == 0)
+              Text(
+                'no data',
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.normal,
+                  color: Colors.white,
+                ),
+              ),
           ],
         )
       ],
