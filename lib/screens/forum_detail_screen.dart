@@ -1,8 +1,17 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:mobile_client/component/icon_with_text.dart';
 import 'package:mobile_client/model/comment.dart';
 import 'package:mobile_client/model/forum_detail.dart';
+import 'package:mobile_client/model/user.dart';
+import 'package:mobile_client/screens/app_drawer.dart';
+import 'package:mobile_client/screens/forum_form_screen.dart';
+import 'package:mobile_client/screens/login_screen.dart';
+import 'package:mobile_client/service/auth_service.dart';
 import 'package:mobile_client/service/forum_service.dart';
+import 'package:provider/provider.dart';
+
+import 'comment_form_screen.dart';
 
 class ForumDetailScreen extends StatefulWidget {
   final int id;
@@ -15,14 +24,20 @@ class ForumDetailScreen extends StatefulWidget {
 class _ForumDetailScreenState extends State<ForumDetailScreen> {
   Future<ForumDetail> _forumDetailFuture;
 
+  _getUserData() => context.read<Auth>().user;
+  _isAuthenticated() => context.read<Auth>().isAuthenticated;
+
   @override
   void initState() {
     super.initState();
     _forumDetailFuture = ForumService().detailForum(widget.id);
+    _getUserData();
   }
 
   @override
   Widget build(BuildContext context) {
+    final user = _getUserData();
+
     return Scaffold(
       appBar: AppBar(),
       body: Padding(
@@ -39,8 +54,58 @@ class _ForumDetailScreenState extends State<ForumDetailScreen> {
                     ss.data.user.username,
                     ss.data.category,
                     ss.data.createdAt,
+                    ss.data.user.id,
+                    user.id,
+                    ss.data.id,
                   ),
-                  Expanded(child: UserComments(commentList: ss.data.comments))
+                  if (_isAuthenticated())
+                    Expanded(
+                      child: UserComments(
+                          commentList: ss.data.comments,
+                          forumId: ss.data.id,
+                          user: user),
+                    ),
+                  RichText(
+                    text: TextSpan(
+                        text: "Komentar Baru",
+                        style: TextStyle(
+                            color: Colors.blue,
+                            fontSize: 16,
+                            decoration: TextDecoration.underline),
+                        recognizer: TapGestureRecognizer()
+                          ..onTap = () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    CommentFormScreen(forumId: ss.data.id),
+                              ),
+                            );
+                          }),
+                  ),
+                  if (!_isAuthenticated())
+                    RichText(
+                      text: TextSpan(
+                          style: TextStyle(color: Colors.black, fontSize: 16),
+                          children: [
+                            TextSpan(text: 'untuk melihat komentar silahkan '),
+                            TextSpan(
+                                text: 'login',
+                                style: TextStyle(
+                                  color: Colors.blue,
+                                  decoration: TextDecoration.underline,
+                                ),
+                                recognizer: TapGestureRecognizer()
+                                  ..onTap = () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => LoginScreen(),
+                                      ),
+                                    );
+                                  })
+                          ]),
+                    ),
                 ],
               );
             } else if (ss.hasError) {
@@ -50,16 +115,12 @@ class _ForumDetailScreenState extends State<ForumDetailScreen> {
           },
         ),
       ),
+      drawer: AppDrawer(),
     );
   }
 
-  Widget questionWidget(
-    String title,
-    String body,
-    String username,
-    String category,
-    String createdAt,
-  ) {
+  Widget questionWidget(String title, String body, String username,
+      String category, String createdAt, int user, int userID, int itemID) {
     return Padding(
       padding: const EdgeInsets.all(5.0),
       child: new Column(
@@ -98,6 +159,20 @@ class _ForumDetailScreenState extends State<ForumDetailScreen> {
               children: <Widget>[
                 new IconWithText(Icons.book, category),
                 new IconWithText(Icons.timer, createdAt),
+                if (_isAuthenticated())
+                  if (user != null)
+                    if (user == userID)
+                      IconButton(
+                        icon: Icon(Icons.edit),
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => ForumFormScreen(id: itemID),
+                            ),
+                          );
+                        },
+                      )
               ],
             ),
           ),
@@ -110,7 +185,10 @@ class _ForumDetailScreenState extends State<ForumDetailScreen> {
 
 class UserComments extends StatefulWidget {
   final commentList;
-  UserComments({Key key, this.commentList}) : super(key: key);
+  final int forumId;
+  final user;
+  UserComments({Key key, this.commentList, this.forumId, this.user})
+      : super(key: key);
 
   @override
   State<UserComments> createState() => _UserCommentsState();
@@ -118,19 +196,32 @@ class UserComments extends StatefulWidget {
 
 class _UserCommentsState extends State<UserComments> {
   Comments _commentsList;
+  int _forumId;
+  User _user;
+
+  Future<bool> checkLoggedIn() async {
+    await Provider.of<Auth>(context, listen: false).requestCheckLogin();
+  }
+
+  _getUserData() => context.read<Auth>().user;
+  _isAuthenticated() => context.read<Auth>().isAuthenticated;
 
   @override
   void initState() {
     super.initState();
     _commentsList = widget.commentList;
+    _forumId = widget.forumId;
+    checkLoggedIn();
+    _isAuthenticated();
+    _getUserData();
   }
 
-  void selectedPopupMenu(String value, String name) {
+  void selectedPopupMenu(String value, dynamic data) {
     String message;
     if (value == 'edit') {
-      message = "You have selected edit for $name";
+      message = "You have selected edit for $data";
     } else if (value == 'delete') {
-      message = "You have selected delete for $name";
+      message = "You have selected delete for $data";
     } else {
       message = "not implemented!!";
     }
@@ -140,34 +231,73 @@ class _UserCommentsState extends State<UserComments> {
 
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(
-      itemCount: _commentsList.items.length,
-      itemBuilder: (ctx, index) {
-        var data = _commentsList.items[index];
-        return ListTile(
-          title: Text('${data.body}', textAlign: TextAlign.justify),
-          subtitle: Text('${data.createdAt} - oleh ${data.user.username}'),
-          trailing: PopupMenuButton(
-            icon: Icon(Icons.info),
-            onSelected: (String value) {
-              print("You click popup menu!!");
-              selectedPopupMenu(value, data.body);
+    final user = _getUserData();
+    return _commentsList.items.isNotEmpty
+        ? ListView.builder(
+            itemCount: _commentsList.items.length,
+            itemBuilder: (ctx, index) {
+              var data = _commentsList.items[index];
+              return Column(
+                children: [
+                  ListTile(
+                    title: Text('${data.body}', textAlign: TextAlign.justify),
+                    subtitle:
+                        Text('${data.createdAt} - oleh ${data.user.username}'),
+                    trailing: _isAuthenticated() && data.userId == user.id
+                        ? PopupMenuButton(
+                            icon: Icon(Icons.info),
+                            onSelected: (String value) {
+                              selectedPopupMenu(value, data.id);
+                            },
+                            itemBuilder: (context) {
+                              return [
+                                PopupMenuItem(
+                                  value: 'edit',
+                                  child: Text('Edit'),
+                                ),
+                                PopupMenuItem(
+                                  value: 'delete',
+                                  child: Text('Delete'),
+                                ),
+                              ];
+                            },
+                          )
+                        : null,
+                  ),
+                ],
+              );
             },
-            itemBuilder: (context) {
-              return [
-                PopupMenuItem(
-                  value: 'edit',
-                  child: Text('Edit'),
+          )
+        : RichText(
+            text: TextSpan(
+              style: TextStyle(color: Colors.black, fontSize: 15.0),
+              children: [
+                TextSpan(text: 'Belum ada komentar, '),
+                TextSpan(
+                  text: 'tambahkan komentar',
+                  style: TextStyle(color: Colors.blue),
+                  recognizer: TapGestureRecognizer()
+                    ..onTap = () {
+                      if (_isAuthenticated()) {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) =>
+                                CommentFormScreen(forumId: _forumId),
+                          ),
+                        );
+                      } else {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => LoginScreen(),
+                          ),
+                        );
+                      }
+                    },
                 ),
-                PopupMenuItem(
-                  value: 'delete',
-                  child: Text('Delete'),
-                ),
-              ];
-            },
-          ),
-        );
-      },
-    );
+              ],
+            ),
+          );
   }
 }

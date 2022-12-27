@@ -33,7 +33,8 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Home Screen'),
+        title: Text('Dicussion Forum'),
+        actions: [],
       ),
       body: FutureBuilder(
           future: futureForums,
@@ -82,7 +83,7 @@ class _ForumListWidgetState extends State<ForumListWidget> {
             title: Text('${item.title}'),
             subtitle: IconWithText(
               Icons.list,
-              '${item.category} by ${item.user.username.capitalize()}',
+              '${item.category} by ${item.user.username}',
             ),
             trailing: Icon(Icons.keyboard_arrow_right, color: Colors.blue),
             onTap: () {
@@ -90,9 +91,8 @@ class _ForumListWidgetState extends State<ForumListWidget> {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => ForumDetailScreen(
-                    id: _forumList[index].id,
-                  ),
+                  builder: (context) =>
+                      ForumDetailScreen(id: _forumList[index].id),
                 ),
               );
             },

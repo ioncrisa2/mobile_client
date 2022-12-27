@@ -53,39 +53,45 @@ class _RegisterScreenState extends State<RegisterScreen> {
     _tanggalLahirController.text = "";
   }
 
-  submitRegisterForm() {
-    List _debugInputed = [
-      "username : " + _usernameController.text,
-      " email : " + _emailController.text,
-      "password : " + _passwordController.text,
-      "confirm password : " + _confirmPasswordController.text,
-      "nama lengkap : " + _namaLengkapController.text,
-      "nim : " + _nimController.text,
-      "jenis kelamin : " + _jenisKelaminController.text,
-      "tanggal lahir : " + _tanggalLahirController.text,
-      "tempat lahir : " + _tempatLahirController.text,
-      "alamat : " + _alamatController.text
-    ];
+  Future submitRegisterForm() async {
+    // List _debugInputed = [
+    //   "username : " + _usernameController.text,
+    //   " email : " + _emailController.text,
+    //   "password : " + _passwordController.text,
+    //   "confirm password : " + _confirmPasswordController.text,
+    //   "nama lengkap : " + _namaLengkapController.text,
+    //   "nim : " + _nimController.text,
+    //   "jenis kelamin : " + _jenisKelaminController.text,
+    //   "tanggal lahir : " + _tanggalLahirController.text,
+    //   "tempat lahir : " + _tempatLahirController.text,
+    //   "alamat : " + _alamatController.text
+    // ];
 
-    print(_debugInputed);
-    // final res = await Auth().requestRegister({
-    //   "username": _usernameController.text,
-    //   "email": _emailController.text,
-    //   "password": _passwordController.text,
-    //   "confirm_password": _confirmPasswordController.text,
-    //   "role_id": 2
-    // });
-    // if (res['status'] == true) {
-    //   //redirect to login screen
-    //   Navigator.pushNamed(context, '/login', arguments: {
-    //     'flash_msg': 'Berhasil Daftar, silahkan login untuk melanjutkan',
-    //   });
-    // } else {
-    //   setState(() {
-    //     _hasError = true;
-    //     _errorMessage = res['error_message'];
-    //   });
-    // }
+    // print(_debugInputed);
+    final res = await Auth().requestRegister({
+      "nama_lengkap": _namaLengkapController.text,
+      "nim": _nimController.text,
+      "jenis_kelamin": _jenisKelaminController.text,
+      "tanggal_lahir": _tanggalLahirController.text,
+      "tempat_lahir": _tempatLahirController.text,
+      "alamat": _alamatController.text,
+      "username": _usernameController.text,
+      "email": _emailController.text,
+      "password": _passwordController.text,
+      "confirm_password": _confirmPasswordController.text,
+      "role_id": 2
+    });
+    if (res['status'] == true) {
+      //redirect to login screen
+      Navigator.pushNamed(context, '/login', arguments: {
+        'flash_msg': 'Berhasil Daftar, silahkan login untuk melanjutkan',
+      });
+    } else {
+      setState(() {
+        _hasError = true;
+        _errorMessage = res['error_message'];
+      });
+    }
   }
 
   @override
