@@ -225,19 +225,6 @@ class _UserCommentsState extends State<UserComments> {
     _getUserData();
   }
 
-  void selectedPopupMenu(String value, dynamic data) {
-    String message;
-    if (value == 'edit') {
-      message = "You have selected edit for $data";
-    } else if (value == 'delete') {
-      message = "You have selected delete for $data";
-    } else {
-      message = "not implemented!!";
-    }
-
-    print(message);
-  }
-
   @override
   Widget build(BuildContext context) {
     final user = _getUserData();
@@ -256,17 +243,36 @@ class _UserCommentsState extends State<UserComments> {
                         ? PopupMenuButton(
                             icon: Icon(Icons.info),
                             onSelected: (String value) {
-                              selectedPopupMenu(value, data.id);
+                              if (value == 'edit') {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => CommentFormScreen(
+                                      forumId: data.forumId,
+                                      comment: data.body,
+                                      commentId: data.id,
+                                    ),
+                                  ),
+                                );
+                              } else if (value == 'delete') {}
                             },
                             itemBuilder: (context) {
                               return [
                                 PopupMenuItem(
                                   value: 'edit',
-                                  child: Text('Edit'),
+                                  child: IconWithText(
+                                    Icons.edit,
+                                    'Edit',
+                                    color: Colors.green.shade400,
+                                  ),
                                 ),
                                 PopupMenuItem(
                                   value: 'delete',
-                                  child: Text('Delete'),
+                                  child: IconWithText(
+                                    Icons.delete,
+                                    'Delete',
+                                    color: Colors.red[500],
+                                  ),
                                 ),
                               ];
                             },
