@@ -92,8 +92,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     btnColor: Colors.blue,
                     btnTextColor: Colors.white,
                   ),
-                  SizedBox(height: 20),
-                  Divider(height: 30, color: Colors.black),
+                  SizedBox(height: 10),
                   RichText(
                     text: TextSpan(
                       style: TextStyle(color: Colors.black, fontSize: 16),

@@ -54,20 +54,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
   }
 
   Future submitRegisterForm() async {
-    // List _debugInputed = [
-    //   "username : " + _usernameController.text,
-    //   " email : " + _emailController.text,
-    //   "password : " + _passwordController.text,
-    //   "confirm password : " + _confirmPasswordController.text,
-    //   "nama lengkap : " + _namaLengkapController.text,
-    //   "nim : " + _nimController.text,
-    //   "jenis kelamin : " + _jenisKelaminController.text,
-    //   "tanggal lahir : " + _tanggalLahirController.text,
-    //   "tempat lahir : " + _tempatLahirController.text,
-    //   "alamat : " + _alamatController.text
-    // ];
-
-    // print(_debugInputed);
     final res = await Auth().requestRegister({
       "nama_lengkap": _namaLengkapController.text,
       "nim": _nimController.text,
@@ -229,7 +215,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 btnColor: Colors.blue,
                 btnTextColor: Colors.white,
               ),
-              Divider(height: 30, color: Colors.black),
+              SizedBox(height: 10),
               RichText(
                 text: TextSpan(
                   style: TextStyle(color: Colors.black, fontSize: 16),
