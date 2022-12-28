@@ -5,7 +5,11 @@ import 'package:mobile_client/service/forum_service.dart';
 
 class CommentFormScreen extends StatefulWidget {
   final int forumId;
-  CommentFormScreen({Key key, this.forumId}) : super(key: key);
+  final String comment;
+  final int commentId;
+
+  CommentFormScreen({Key key, this.forumId, this.comment, this.commentId})
+      : super(key: key);
 
   @override
   State<CommentFormScreen> createState() => _CommentFormScreenState();
@@ -17,11 +21,34 @@ class _CommentFormScreenState extends State<CommentFormScreen> {
   String _errorMsg = "";
   final TextEditingController _bodyCtrl = TextEditingController();
 
+  @override
+  dispose() {
+    _bodyCtrl.dispose();
+    super.dispose();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.comment != null) {
+      _bodyCtrl.text = widget.comment;
+      _editMode = true;
+    }
+  }
+
   Future insertComment() async {
     var res;
 
-    res = await ForumService()
-        .postComment({'body': _bodyCtrl.text}, widget.forumId);
+    if (_editMode == false) {
+      res = await ForumService()
+          .postComment({'body': _bodyCtrl.text}, widget.forumId);
+    } else if (_editMode == true) {
+      res = await ForumService().updateComment(
+        {'body': _bodyCtrl.text},
+        widget.forumId,
+        widget.commentId,
+      );
+    }
 
     print("data : $res");
 
@@ -41,16 +68,10 @@ class _CommentFormScreenState extends State<CommentFormScreen> {
   }
 
   @override
-  dispose() {
-    _bodyCtrl.dispose();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("New Comments"),
+        title: Text(_editMode == false ? 'New Comments' : 'Edit Comments'),
       ),
       body: SingleChildScrollView(
           padding: const EdgeInsets.all(20.0),
@@ -73,13 +94,16 @@ class _CommentFormScreenState extends State<CommentFormScreen> {
               SizedBox(height: 20),
               Column(children: [
                 WideButton(
-                  onPressed: () => insertComment(),
                   btnText: _editMode == false ? 'Submit' : 'Edit',
                   btnColor: Colors.blueAccent.shade400,
                   btnTextColor: Colors.white,
+                  onPressed: () => insertComment(),
                 ),
                 SizedBox(height: 10),
                 WideButton(
+                  btnText: 'Back',
+                  btnColor: Colors.grey.shade400,
+                  btnTextColor: Colors.black,
                   onPressed: () {
                     Navigator.push(
                       context,
@@ -89,9 +113,6 @@ class _CommentFormScreenState extends State<CommentFormScreen> {
                       ),
                     );
                   },
-                  btnText: 'Back',
-                  btnColor: Colors.grey.shade400,
-                  btnTextColor: Colors.black,
                 ),
               ]),
             ],
