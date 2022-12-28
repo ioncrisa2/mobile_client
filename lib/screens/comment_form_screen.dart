@@ -80,7 +80,15 @@ class _CommentFormScreenState extends State<CommentFormScreen> {
                 ),
                 SizedBox(height: 10),
                 WideButton(
-                  onPressed: () => Navigator.pushNamed(context, '/home'),
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) =>
+                            ForumDetailScreen(id: widget.forumId),
+                      ),
+                    );
+                  },
                   btnText: 'Back',
                   btnColor: Colors.grey.shade400,
                   btnTextColor: Colors.black,

@@ -61,50 +61,65 @@ class _ForumDetailScreenState extends State<ForumDetailScreen> {
                   if (_isAuthenticated())
                     Expanded(
                       child: UserComments(
-                          commentList: ss.data.comments,
-                          forumId: ss.data.id,
-                          user: user),
+                        commentList: ss.data.comments,
+                        forumId: ss.data.id,
+                        user: user,
+                      ),
                     ),
-                  RichText(
-                    text: TextSpan(
+                  Container(
+                    child: RichText(
+                      text: TextSpan(
                         text: "Komentar Baru",
                         style: TextStyle(
-                            color: Colors.blue,
+                            color: Colors.blueAccent.shade400,
                             fontSize: 16,
                             decoration: TextDecoration.underline),
                         recognizer: TapGestureRecognizer()
                           ..onTap = () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) =>
-                                    CommentFormScreen(forumId: ss.data.id),
-                              ),
-                            );
-                          }),
+                            if (user != null && _isAuthenticated()) {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) =>
+                                      CommentFormScreen(forumId: ss.data.id),
+                                ),
+                              );
+                            } else {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => LoginScreen(),
+                                ),
+                              );
+                            }
+                          },
+                      ),
+                    ),
                   ),
                   if (!_isAuthenticated())
                     RichText(
                       text: TextSpan(
-                          style: TextStyle(color: Colors.black, fontSize: 16),
-                          children: [
-                            TextSpan(text: 'untuk melihat komentar silahkan '),
-                            TextSpan(
-                                text: 'login',
-                                style: TextStyle(
-                                  color: Colors.blue,
-                                  decoration: TextDecoration.underline,
-                                ),
-                                recognizer: TapGestureRecognizer()
-                                  ..onTap = () {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) => LoginScreen(),
-                                      ),
-                                    );
-                                  })
-                          ]),
+                        style: TextStyle(color: Colors.black, fontSize: 16),
+                        children: [
+                          TextSpan(text: 'untuk melihat komentar silahkan '),
+                          TextSpan(
+                            text: 'login',
+                            style: TextStyle(
+                              color: Colors.blue,
+                              decoration: TextDecoration.underline,
+                            ),
+                            recognizer: TapGestureRecognizer()
+                              ..onTap = () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => LoginScreen(),
+                                  ),
+                                );
+                              },
+                          ),
+                        ],
+                      ),
                     ),
                 ],
               );
@@ -197,11 +212,6 @@ class UserComments extends StatefulWidget {
 class _UserCommentsState extends State<UserComments> {
   Comments _commentsList;
   int _forumId;
-  User _user;
-
-  Future<bool> checkLoggedIn() async {
-    await Provider.of<Auth>(context, listen: false).requestCheckLogin();
-  }
 
   _getUserData() => context.read<Auth>().user;
   _isAuthenticated() => context.read<Auth>().isAuthenticated;
@@ -211,7 +221,6 @@ class _UserCommentsState extends State<UserComments> {
     super.initState();
     _commentsList = widget.commentList;
     _forumId = widget.forumId;
-    checkLoggedIn();
     _isAuthenticated();
     _getUserData();
   }
