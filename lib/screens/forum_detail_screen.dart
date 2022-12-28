@@ -44,25 +44,26 @@ class _ForumDetailScreenState extends State<ForumDetailScreen> {
         padding: EdgeInsets.all(8),
         child: FutureBuilder(
           future: _forumDetailFuture,
-          builder: (ctx, ss) {
-            if (ss.hasData) {
+          builder: (ctx, index) {
+            final comment = index.data;
+            if (index.hasData) {
               return Column(
                 children: <Widget>[
                   questionWidget(
-                    ss.data.title,
-                    ss.data.body,
-                    ss.data.user.username,
-                    ss.data.category,
-                    ss.data.createdAt,
-                    ss.data.user.id,
+                    comment.title,
+                    comment.body,
+                    comment.user.username,
+                    comment.category,
+                    comment.createdAt,
+                    comment.user.id,
                     user.id,
-                    ss.data.id,
+                    comment.id,
                   ),
                   if (_isAuthenticated())
                     Expanded(
                       child: UserComments(
-                        commentList: ss.data.comments,
-                        forumId: ss.data.id,
+                        commentList: comment.comments,
+                        forumId: comment.id,
                         user: user,
                       ),
                     ),
@@ -81,7 +82,7 @@ class _ForumDetailScreenState extends State<ForumDetailScreen> {
                                 context,
                                 MaterialPageRoute(
                                   builder: (context) =>
-                                      CommentFormScreen(forumId: ss.data.id),
+                                      CommentFormScreen(forumId: comment.id),
                                 ),
                               );
                             } else {
@@ -123,8 +124,8 @@ class _ForumDetailScreenState extends State<ForumDetailScreen> {
                     ),
                 ],
               );
-            } else if (ss.hasError) {
-              return Text("${ss.error}");
+            } else if (index.hasError) {
+              return Text("${index.error}");
             }
             return Center(child: CircularProgressIndicator());
           },
