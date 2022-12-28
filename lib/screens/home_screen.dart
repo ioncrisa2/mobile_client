@@ -6,7 +6,6 @@ import 'package:mobile_client/service/auth_service.dart';
 import 'package:mobile_client/service/forum_service.dart';
 import 'package:provider/provider.dart';
 import 'package:mobile_client/screens/forum_detail_screen.dart';
-import 'package:mobile_client/Helper/string_extension.dart';
 
 class HomeScreen extends StatefulWidget {
   HomeScreen({Key key}) : super(key: key);
@@ -34,7 +33,12 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Dicussion Forum'),
-        actions: [],
+        actions: <Widget>[
+          IconButton(
+            icon: Icon(Icons.refresh),
+            onPressed: () => Navigator.pushNamed(context, '/home'),
+          )
+        ],
       ),
       body: FutureBuilder(
           future: futureForums,
@@ -76,8 +80,11 @@ class _ForumListWidgetState extends State<ForumListWidget> {
         final item = _forumList[index];
         return Card(
           shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(5),
-              side: BorderSide(color: Colors.black)),
+            borderRadius: BorderRadius.circular(5),
+            side: BorderSide(
+              color: Colors.grey.shade400,
+            ),
+          ),
           shadowColor: Colors.grey.shade50,
           child: ListTile(
             title: Text('${item.title}'),
@@ -85,7 +92,7 @@ class _ForumListWidgetState extends State<ForumListWidget> {
               Icons.list,
               '${item.category} by ${item.user.username}',
             ),
-            trailing: Icon(Icons.keyboard_arrow_right, color: Colors.blue),
+            trailing: Icon(Icons.info, color: Colors.black87),
             onTap: () {
               print('clicked ${item.id}');
               Navigator.push(
