@@ -93,7 +93,7 @@ class Auth extends ChangeNotifier {
     }
   }
 
-  Future<bool> requestCheckLogin() async {
+  Future requestCheckLogin() async {
     try {
       final token = await TokenStorage().readToken();
       final res = await dio().get('/user',
