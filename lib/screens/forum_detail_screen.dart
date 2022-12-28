@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:mobile_client/component/icon_with_text.dart';
 import 'package:mobile_client/model/comment.dart';
 import 'package:mobile_client/model/forum_detail.dart';
-import 'package:mobile_client/model/user.dart';
 import 'package:mobile_client/screens/app_drawer.dart';
 import 'package:mobile_client/screens/forum_form_screen.dart';
 import 'package:mobile_client/screens/login_screen.dart';
