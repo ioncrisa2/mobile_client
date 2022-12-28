@@ -8,20 +8,19 @@ class IconWithText extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: <Widget>[
-          new Icon(
-            this.iconData,
-            color: Colors.black,
+    return new Row(
+      children: <Widget>[
+        new Icon(
+          this.iconData,
+          color: Colors.black,
+        ),
+        new Padding(
+          padding: const EdgeInsets.only(left: 8.0),
+          child: new Text(
+            this.text,
           ),
-          new Padding(
-            padding: const EdgeInsets.only(left: 8.0),
-            child: new Text(this.text),
-          )
-        ],
-      ),
+        )
+      ],
     );
   }
 }
