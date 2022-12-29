@@ -1,11 +1,9 @@
 import 'dart:convert';
 import 'package:dio/dio.dart' as Dio;
 import 'package:mobile_client/Helper/dio.dart';
-import 'package:mobile_client/model/comment.dart';
 import 'package:mobile_client/model/forum.dart';
 import 'package:mobile_client/Helper/token_storage.dart';
 import 'package:mobile_client/model/forum_detail.dart';
-import 'package:mobile_client/model/user.dart';
 
 class ForumService {
   // ignore: missing_return
