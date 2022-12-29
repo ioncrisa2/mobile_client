@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mobile_client/screens/forum_form_screen.dart';
 import 'package:mobile_client/screens/home_screen.dart';
+import 'package:mobile_client/screens/job_info_screen.dart';
 import 'package:mobile_client/screens/login_screen.dart';
 import 'package:mobile_client/screens/profile_edit_screen.dart';
 import 'package:mobile_client/screens/profile_screen.dart';
@@ -22,7 +23,8 @@ void main() {
           '/register': (context) => RegisterScreen(),
           '/login': (context) => LoginScreen(),
           '/profile': (context) => ProfileScreen(),
-          '/profile_edit': (context) => ProfileEditScreen()
+          '/profile_edit': (context) => ProfileEditScreen(),
+          '/jobinfo': (context) => JobInfoScreen()
         },
       ),
     ),
