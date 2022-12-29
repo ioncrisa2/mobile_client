@@ -3,7 +3,7 @@ import 'package:mobile_client/component/app_drawer_menu.dart';
 import 'package:mobile_client/service/auth_service.dart';
 import 'package:provider/provider.dart';
 
-import 'login_screen.dart';
+// import 'login_screen.dart';
 
 class AppDrawer extends StatefulWidget {
   AppDrawer({Key key}) : super(key: key);
@@ -45,6 +45,11 @@ class _AppDrawerState extends State<AppDrawer> {
           route: '/forum_form',
           title: 'New Discussion',
           icon: Icon(Icons.format_list_bulleted_outlined),
+        ),
+        AppDrawerMenu(
+          route: '/jobinfo',
+          title: 'Job Info',
+          icon: Icon(Icons.work),
         ),
         Expanded(
           child: Align(
