@@ -5,6 +5,7 @@ import 'package:mobile_client/model/comment.dart';
 import 'package:mobile_client/model/forum_detail.dart';
 import 'package:mobile_client/screens/app_drawer.dart';
 import 'package:mobile_client/screens/forum_form_screen.dart';
+import 'package:mobile_client/screens/home_screen.dart';
 import 'package:mobile_client/screens/login_screen.dart';
 import 'package:mobile_client/service/auth_service.dart';
 import 'package:mobile_client/service/forum_service.dart';
@@ -23,12 +24,17 @@ class ForumDetailScreen extends StatefulWidget {
 class _ForumDetailScreenState extends State<ForumDetailScreen> {
   Future<ForumDetail> _forumDetailFuture;
 
+  void checkIfLoggedId() async {
+    await Provider.of<Auth>(context, listen: false).requestCheckLogin();
+  }
+
   _getUserData() => context.read<Auth>().user;
   _isAuthenticated() => context.read<Auth>().isAuthenticated;
 
   @override
   void initState() {
     super.initState();
+    checkIfLoggedId();
     _forumDetailFuture = ForumService().detailForum(widget.id);
     _getUserData();
   }
@@ -96,31 +102,6 @@ class _ForumDetailScreenState extends State<ForumDetailScreen> {
                       ),
                     ),
                   ),
-                  if (!_isAuthenticated())
-                    RichText(
-                      text: TextSpan(
-                        style: TextStyle(color: Colors.black, fontSize: 16),
-                        children: [
-                          TextSpan(text: 'untuk melihat komentar silahkan '),
-                          TextSpan(
-                            text: 'login',
-                            style: TextStyle(
-                              color: Colors.blue,
-                              decoration: TextDecoration.underline,
-                            ),
-                            recognizer: TapGestureRecognizer()
-                              ..onTap = () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => LoginScreen(),
-                                  ),
-                                );
-                              },
-                          ),
-                        ],
-                      ),
-                    ),
                 ],
               );
             } else if (index.hasError) {
@@ -177,16 +158,37 @@ class _ForumDetailScreenState extends State<ForumDetailScreen> {
                 if (_isAuthenticated())
                   if (user != null)
                     if (user == userID)
-                      IconButton(
-                        icon: Icon(Icons.edit),
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => ForumFormScreen(id: itemID),
-                            ),
-                          );
-                        },
+                      Row(
+                        children: [
+                          IconButton(
+                            icon: Icon(Icons.edit),
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) =>
+                                      ForumFormScreen(id: itemID),
+                                ),
+                              );
+                            },
+                          ),
+                          IconButton(
+                            icon: Icon(Icons.delete),
+                            onPressed: () async {
+                              final res =
+                                  await ForumService().deleteForum(widget.id);
+
+                              if (res['status'] == true) {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => HomeScreen(),
+                                  ),
+                                );
+                              }
+                            },
+                          ),
+                        ],
                       )
               ],
             ),
@@ -215,6 +217,22 @@ class _UserCommentsState extends State<UserComments> {
 
   _getUserData() => context.read<Auth>().user;
   _isAuthenticated() => context.read<Auth>().isAuthenticated;
+
+  Future deleteComment({forum, comment}) async {
+    final res = await ForumService().deleteComment(
+      forumId: forum,
+      commentId: comment,
+    );
+
+    if (res['status'] == true) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => ForumDetailScreen(id: widget.forumId),
+        ),
+      );
+    }
+  }
 
   @override
   void initState() {
@@ -254,7 +272,14 @@ class _UserCommentsState extends State<UserComments> {
                                     ),
                                   ),
                                 );
-                              } else if (value == 'delete') {}
+                              } else if (value == 'delete') {
+                                print(
+                                    'delete clickec with comment id ${data.id}');
+                                deleteComment(
+                                  forum: data.forumId,
+                                  comment: data.id,
+                                );
+                              }
                             },
                             itemBuilder: (context) {
                               return [

@@ -67,12 +67,19 @@ class _JobListWidgetState extends State<JobListWidget> {
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
+      shrinkWrap: true,
       itemCount: _jobsList.length,
       itemBuilder: (ctx, index) {
         final item = _jobsList[index];
         return InkWell(
           onTap: () {
-            print('Tapped ${item.id}');
+            print('Clicked ${item.id}');
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => JobInfoDetailScreen(id: item.id),
+              ),
+            );
           },
           child: Card(
             shape: RoundedRectangleBorder(

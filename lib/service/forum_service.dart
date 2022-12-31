@@ -95,6 +95,38 @@ class ForumService {
     };
   }
 
+  Future deleteForum(id) async {
+    try {
+      final token = await TokenStorage().readToken();
+      final res = await dio().delete(
+        '/forums/$id',
+        options: Dio.Options(
+          headers: {'Authorization': 'Bearer $token'},
+        ),
+      );
+
+      if (res.statusCode == 200) {
+        return {'status': true};
+      }
+    } on Dio.DioError catch (e) {
+      if (e.response.statusCode == 404) {
+        return {'status': false, 'error_message': 'Data Tidak ditemukan!!'};
+      }
+      if (e.response.statusCode == 422) {
+        var _responseError = "";
+        final _responseValidation = jsonDecode(e.response.toString())['errors'];
+        for (var key in _responseValidation.keys) {
+          _responseError += _responseValidation[key][0] + "\n";
+        }
+        return {'status': false, 'error_message': _responseError};
+      }
+    }
+    return {
+      'status': false,
+      'error_message': 'something wrong, please try again'
+    };
+  }
+
   Future postComment(data, id) async {
     try {
       final token = await TokenStorage().readToken();
@@ -140,6 +172,38 @@ class ForumService {
         return {'status': true};
       }
     } on Dio.DioError catch (e) {
+      if (e.response.statusCode == 422) {
+        var _responseError = "";
+        final _responseValidation = jsonDecode(e.response.toString())['errors'];
+        for (var key in _responseValidation.keys) {
+          _responseError += _responseValidation[key][0] + "\n";
+        }
+        return {'status': false, 'error_message': _responseError};
+      }
+    }
+    return {
+      'status': false,
+      'error_message': 'something wrong, please try again'
+    };
+  }
+
+  Future deleteComment({forumId, commentId}) async {
+    try {
+      final token = await TokenStorage().readToken();
+      final res = await dio().delete(
+        '/forums/$forumId/comments/$commentId',
+        options: Dio.Options(
+          headers: {'Authorization': 'Bearer $token'},
+        ),
+      );
+
+      if (res.statusCode == 204) {
+        return {'status': true};
+      }
+    } on Dio.DioError catch (e) {
+      if (e.response.statusCode == 404) {
+        return {'status': false, 'error_message': 'Data Tidak ditemukan!!'};
+      }
       if (e.response.statusCode == 422) {
         var _responseError = "";
         final _responseValidation = jsonDecode(e.response.toString())['errors'];

@@ -61,6 +61,7 @@ class _LoginScreenState extends State<LoginScreen> {
               child: Column(
                 children: <Widget>[
                   TextField(
+                    keyboardType: TextInputType.emailAddress,
                     controller: _emailController,
                     decoration: InputDecoration(
                         icon: Icon(Icons.email), labelText: "Email Anda"),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mobile_client/component/app_drawer_menu.dart';
+import 'package:mobile_client/screens/login_screen.dart';
 import 'package:mobile_client/service/auth_service.dart';
 import 'package:provider/provider.dart';
 
@@ -19,7 +20,12 @@ class _AppDrawerState extends State<AppDrawer> {
       final res =
           await Provider.of<Auth>(context, listen: false).requestLogout();
       if (res['status'] == true) {
-        Navigator.of(context).pushReplacementNamed('/login');
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => LoginScreen(),
+          ),
+        );
       } else {
         print('logout failed');
       }

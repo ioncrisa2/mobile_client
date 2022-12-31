@@ -1,28 +1,8 @@
-import 'package:mobile_client/model/user.dart';
 import 'package:mobile_client/model/company.dart';
+import 'package:mobile_client/model/type.dart';
+import 'package:mobile_client/model/user.dart';
 
-class Jobs {
-  List<Job> job;
-
-  Jobs({this.job});
-
-  Jobs.fromJson(json) {
-    job = <Job>[];
-    json['data'].forEach((item) {
-      job.add(new Job.fromJson(item));
-    });
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    if (this.job != null) {
-      data['data'] = this.job.map((e) => e.toJson()).toList();
-    }
-    return data;
-  }
-}
-
-class Job {
+class JobDetail {
   int id;
   String jobName;
   String jobDescription;
@@ -33,9 +13,10 @@ class Job {
   String createdAt;
   String updatedAt;
   User user;
+  Types types;
   Company company;
 
-  Job({
+  JobDetail({
     this.id,
     this.jobName,
     this.jobDescription,
@@ -46,22 +27,24 @@ class Job {
     this.createdAt,
     this.updatedAt,
     this.user,
+    this.types,
     this.company,
   });
 
-  factory Job.fromJson(Map<String, dynamic> json) {
-    return Job(
-        id: json['id'],
-        jobName: json['job_name'],
-        jobDescription: json['job_description'],
-        poster: json['poster'],
-        endDate: json['end_date'],
-        companyId: json['company_id'],
-        userId: json['user_id'],
-        createdAt: json['created_at'],
-        updatedAt: json['updated_at'],
-        company:
-            json['company'] != null ? Company.fromJson(json['company']) : null);
+  JobDetail.fromJson(Map<String, dynamic> json) {
+    id = json['id'];
+    jobName = json['job_name'];
+    jobDescription = json['job_description'];
+    poster = json['poster'];
+    endDate = json['end_date'];
+    companyId = json['company_id'];
+    userId = json['user_id'];
+    createdAt = json['created_at'];
+    updatedAt = json['updated_at'];
+    user = json['user'] != null ? new User.fromJson(json['user']) : null;
+    types = json['types'] != null ? new Types.fromJson(json['types']) : null;
+    company =
+        json['company'] != null ? new Company.fromJson(json['company']) : null;
   }
 
   Map<String, dynamic> toJson() {
@@ -77,6 +60,9 @@ class Job {
     data['updated_at'] = this.updatedAt;
     if (this.user != null) {
       data['user'] = this.user.toJson();
+    }
+    if (this.types != null) {
+      data['types'] = this.types.toJson();
     }
     if (this.company != null) {
       data['company'] = this.company.toJson();

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mobile_client/component/wide_button.dart';
 import 'package:mobile_client/screens/app_drawer.dart';
+import 'package:mobile_client/screens/forum_detail_screen.dart';
 import 'package:mobile_client/service/forum_service.dart';
 
 class ForumFormScreen extends StatefulWidget {
@@ -62,7 +63,12 @@ class _ForumFormScreenState extends State<ForumFormScreen> {
     print("data : $res");
 
     if (res['status'] == true) {
-      Navigator.pushNamed(context, '/home');
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => ForumDetailScreen(id: widget.id),
+        ),
+      );
     } else {
       setState(() {
         _hasError = true;
@@ -119,7 +125,14 @@ class _ForumFormScreenState extends State<ForumFormScreen> {
                 ),
                 SizedBox(height: 10),
                 WideButton(
-                  onPressed: () => Navigator.pushNamed(context, '/home'),
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => ForumDetailScreen(id: widget.id),
+                      ),
+                    );
+                  },
                   btnText: 'Back',
                   btnColor: Colors.grey.shade400,
                   btnTextColor: Colors.black,

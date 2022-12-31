@@ -99,6 +99,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
               ),
               SizedBox(height: 10),
               TextField(
+                keyboardType: TextInputType.number,
                 maxLength: 7,
                 controller: _nimController,
                 decoration: InputDecoration(
@@ -113,10 +114,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 ),
                 onTap: () async {
                   DateTime pickedDate = await showDatePicker(
-                      context: context,
-                      initialDate: DateTime.now(),
-                      firstDate: DateTime(1950),
-                      lastDate: DateTime(2100));
+                    context: context,
+                    initialDate: DateTime.now(),
+                    firstDate: DateTime(1950),
+                    lastDate: DateTime(2100),
+                  );
 
                   if (pickedDate != null) {
                     String formattedDate =
@@ -175,6 +177,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
               ),
               SizedBox(height: 10),
               TextField(
+                keyboardType: TextInputType.emailAddress,
                 controller: _emailController,
                 decoration: InputDecoration(
                     icon: Icon(Icons.email), labelText: "Email Anda"),

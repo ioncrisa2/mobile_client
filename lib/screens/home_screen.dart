@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:mobile_client/component/icon_with_text.dart';
 import 'package:mobile_client/model/forum.dart';
 import 'package:mobile_client/screens/app_drawer.dart';
+import 'package:mobile_client/screens/login_screen.dart';
 import 'package:mobile_client/service/auth_service.dart';
 import 'package:mobile_client/service/forum_service.dart';
 import 'package:provider/provider.dart';
@@ -66,10 +67,13 @@ class ForumListWidget extends StatefulWidget {
 class _ForumListWidgetState extends State<ForumListWidget> {
   List<Forum> _forumList;
 
+  _isAuthenticated() => context.read<Auth>().isAuthenticated;
+
   @override
   void initState() {
     super.initState();
     _forumList = widget.forums;
+    _isAuthenticated();
   }
 
   @override
@@ -95,13 +99,22 @@ class _ForumListWidgetState extends State<ForumListWidget> {
             trailing: Icon(Icons.info, color: Colors.black87),
             onTap: () {
               print('clicked ${item.id}');
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) =>
-                      ForumDetailScreen(id: _forumList[index].id),
-                ),
-              );
+              if (_isAuthenticated()) {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) =>
+                        ForumDetailScreen(id: _forumList[index].id),
+                  ),
+                );
+              } else if (!_isAuthenticated()) {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => LoginScreen(),
+                  ),
+                );
+              }
             },
           ),
         );
