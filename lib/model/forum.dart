@@ -31,11 +31,14 @@ class Forum {
 
   factory Forum.fromJson(Map<String, dynamic> json) {
     return Forum(
-        id: json['id'],
-        title: json['title'],
-        body: json['body'],
-        category: json['category'],
-        createdAt: json['created_at'],
-        user: User.fromJson(json['user']));
+      id: json['id'],
+      title: json['title'],
+      body: json['body'],
+      category: json['category'],
+      createdAt: json['created_at'],
+      user: User.fromJson(
+        json['user'],
+      ),
+    );
   }
 }
