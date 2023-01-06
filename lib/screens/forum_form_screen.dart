@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:mobile_client/component/wide_button.dart';
 import 'package:mobile_client/screens/app_drawer.dart';
 import 'package:mobile_client/screens/forum_detail_screen.dart';
+import 'package:mobile_client/screens/home_screen.dart';
 import 'package:mobile_client/service/forum_service.dart';
 
 class ForumFormScreen extends StatefulWidget {
@@ -63,12 +64,21 @@ class _ForumFormScreenState extends State<ForumFormScreen> {
     print("data : $res");
 
     if (res['status'] == true) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => ForumDetailScreen(id: widget.id),
-        ),
-      );
+      if (_editMode == false) {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => HomeScreen(),
+          ),
+        );
+      } else if (_editMode == true) {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => ForumDetailScreen(id: widget.id),
+          ),
+        );
+      }
     } else {
       setState(() {
         _hasError = true;
