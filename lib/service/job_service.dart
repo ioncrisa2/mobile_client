@@ -11,7 +11,7 @@ class JobService {
   //ignore: missing_return
   Future<Jobs> getJobs() async {
     final token = await TokenStorage().readToken();
-    final response = await dio().get('/jobs',
+    final response = await dio().get('/job',
         options: Dio.Options(headers: {
           'Content-Type': 'application/json',
           'Accept': 'application/json',
@@ -29,7 +29,7 @@ class JobService {
   Future<JobDetail> detailJob(id) async {
     final token = await TokenStorage().readToken();
     final response = await dio().get(
-      '/jobs/$id',
+      '/job/$id',
       options: Dio.Options(
         headers: {
           'Content-Type': 'application/json',

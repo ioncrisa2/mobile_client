@@ -151,10 +151,6 @@ class ForumService {
         return {'status': false, 'error_message': _responseError};
       }
     }
-    return {
-      'status': false,
-      'error_message': 'something wrong, please try again'
-    };
   }
 
   Future updateComment(data, forumId, commentId) async {
@@ -181,10 +177,6 @@ class ForumService {
         return {'status': false, 'error_message': _responseError};
       }
     }
-    return {
-      'status': false,
-      'error_message': 'something wrong, please try again'
-    };
   }
 
   Future deleteComment({forumId, commentId}) async {
