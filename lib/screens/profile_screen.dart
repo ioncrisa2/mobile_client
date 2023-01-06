@@ -31,15 +31,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Profile Screen ${user.username ?? 'n/a'}'),
-        actions: [
-          Padding(
-            padding: EdgeInsets.only(right: 10),
-            child: GestureDetector(
-              onTap: () => {Navigator.pushNamed(context, '/profile_edit')},
-              child: Icon(Icons.edit),
-            ),
-          ),
-        ],
       ),
       body: Builder(
         builder: (scaffoldContext) {
